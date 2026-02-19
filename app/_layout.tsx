@@ -17,7 +17,9 @@ import { BiometricGate } from "@/components/BiometricGate";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { AuthScreen } from "@/components/AuthScreen";
 import { EmailVerificationScreen } from "@/components/EmailVerificationScreen";
+import { Onboarding } from "@/components/Onboarding";
 import { View, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,15 +31,37 @@ function RootLayoutNav() {
   );
 }
 
+const HAS_LAUNCHED = 'has_launched';
+
 function AuthGate() {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
-  if (isLoading) {
+  useEffect(() => {
+    AsyncStorage.getItem(HAS_LAUNCHED).then(value => {
+      if (value === null) {
+        setShowOnboarding(true);
+      } else {
+        setShowOnboarding(false);
+      }
+    });
+  }, []);
+
+  const handleOnboardingComplete = async () => {
+    await AsyncStorage.setItem(HAS_LAUNCHED, 'true');
+    setShowOnboarding(false);
+  };
+
+  if (isLoading || showOnboarding === null) {
     return (
       <View style={{ flex: 1, backgroundColor: '#0A0A1A', justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#00F0FF" />
       </View>
     );
+  }
+
+  if (showOnboarding) {
+    return <Onboarding onComplete={handleOnboardingComplete} />;
   }
 
   if (!isAuthenticated) {

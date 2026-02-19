@@ -38,10 +38,7 @@ export function EmailVerificationScreen() {
 
     setIsLoading(true);
     try {
-      const apiDomain = process.env.EXPO_PUBLIC_DOMAIN || 'http://localhost:8000';
-      const baseUrl = `http://${apiDomain}`;
-
-      const response = await fetch(`${baseUrl}/api/verify-email`, {
+      const response = await fetch('/api/verify-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,10 +75,7 @@ export function EmailVerificationScreen() {
   const handleResendEmail = async () => {
     setIsResending(true);
     try {
-      const apiDomain = process.env.EXPO_PUBLIC_DOMAIN || 'http://localhost:8000';
-      const baseUrl = `http://${apiDomain}`;
-
-      const response = await fetch(`${baseUrl}/api/resend-verification`, {
+      const response = await fetch('/api/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -186,22 +180,21 @@ export function EmailVerificationScreen() {
           </Pressable>
         </View>
 
-        {/* Logout */}
+        {/* Back to Sign Up */}
         <Pressable
-          style={styles.logoutButton}
+          style={styles.backButton}
           onPress={() => {
-            Alert.alert('Sign Out', 'Are you sure?', [
+            Alert.alert('Go Back', 'Are you sure? You will need to sign in or sign up again.', [
               { text: 'Cancel', onPress: () => {} },
               {
-                text: 'Sign Out',
+                text: 'Go Back',
                 onPress: () => logout(),
                 style: 'destructive',
               },
             ]);
           }}
         >
-          <Ionicons name="log-out-outline" size={18} color={Colors.dark.accentCoral} />
-          <Text style={styles.logoutButtonText}>Sign Out</Text>
+          <Text style={styles.backButtonText}>Back to Sign Up</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
@@ -313,20 +306,16 @@ const styles = StyleSheet.create({
   resendButtonTextDisabled: {
     color: '#666',
   },
-  logoutButton: {
-    flexDirection: 'row',
+  backButton: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.dark.accentCoral,
     marginTop: 20,
   },
-  logoutButtonText: {
+  backButtonText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: Colors.dark.accentCoral,
-    marginLeft: 8,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: Colors.dark.textMuted,
+    textDecorationLine: 'underline',
   },
 });

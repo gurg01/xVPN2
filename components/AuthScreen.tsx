@@ -148,9 +148,14 @@ export function AuthScreen() {
                   <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={Colors.dark.textMuted} />
                 </Pressable>
               </View>
+              {mode === 'login' && (
+                <Pressable style={styles.forgotPassword} onPress={() => {}}>
+                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </Pressable>
+              )}
             </View>
 
-            {error && (
+            {error && error.trim() !== '' && (
               <View style={styles.errorContainer}>
                 <Ionicons name="alert-circle" size={14} color={Colors.dark.accentCoral} />
                 <Text style={styles.errorText}>{error}</Text>
@@ -293,6 +298,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.dark.text,
     paddingVertical: 14,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: 4,
+  },
+  forgotPasswordText: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 12,
+    color: Colors.dark.accent,
   },
   errorContainer: {
     flexDirection: 'row',
