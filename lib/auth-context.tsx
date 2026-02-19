@@ -97,10 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; message?: string }> => {
     try {
-      const apiDomain = process.env.EXPO_PUBLIC_DOMAIN || 'http://localhost:8000';
-      const baseUrl = `http://${apiDomain}`;
-      
-      const response = await fetch(`${baseUrl}/api/login`, {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -131,10 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = useCallback(async (email: string, password: string, username: string): Promise<{ success: boolean; message?: string }> => {
     try {
-      const apiDomain = process.env.EXPO_PUBLIC_DOMAIN || 'http://localhost:8000';
-      const baseUrl = `http://${apiDomain}`;
-      
-      const response = await fetch(`${baseUrl}/api/register`, {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
