@@ -6,7 +6,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
   console.warn("WARNING: STRIPE_SECRET_KEY is not set. Stripe features will not work.");
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
 const PLANS: Record<string, { name: string; priceInCents: number; interval: "month" | "year" }> = {
   elite_stealth: {
@@ -37,6 +37,10 @@ export function registerStripeWebhook(app: Express) {
       if (!sig) {
         console.error("No stripe-signature header");
         return res.status(400).json({ error: "Missing stripe-signature header" });
+      }
+
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe is not configured" });
       }
 
       let event: Stripe.Event;
@@ -287,7 +291,7 @@ export function registerStripeRoutes(app: Express) {
         sessionParams.customer_email = email;
       }
 
-      const session = await stripe.checkout.sessions.create(sessionParams);
+      const session = await stripe!.checkout.sessions.create(sessionParams as any);
 
       return res.json({
         sessionId: session.id,
@@ -301,6 +305,9 @@ export function registerStripeRoutes(app: Express) {
 
   app.get("/stripe/check-session/:sessionId", async (req: Request, res: Response) => {
     try {
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe is not configured" });
+      }
       const session = await stripe.checkout.sessions.retrieve(req.params.sessionId as string);
       return res.json({
         status: session.payment_status,
