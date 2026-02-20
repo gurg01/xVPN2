@@ -1,3 +1,12 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, Pressable, Platform, ActivityIndicator, KeyboardAvoidingView, ScrollView, Animated, Alert, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { useAuth } from '@/lib/auth-context';
+import Colors from '@/constants/colors';
+
+const { width } = Dimensions.get('window');
+
 const FloatingInput = ({ label, value, onChangeText, secureTextEntry, ...props }: any) => {
   const [isFocused, setIsFocused] = useState(false);
   const animatedValue = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -53,12 +62,9 @@ const FloatingInput = ({ label, value, onChangeText, secureTextEntry, ...props }
     </View>
   );
 };
-import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { useAuth } from '@/lib/auth-context';
-import Colors from '@/constants/colors';
 
 export function AuthScreen() {
+  const { login, signup } = useAuth();
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,7 +73,6 @@ export function AuthScreen() {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
 
   const handleSubmit = async () => {
     setError(null);
@@ -254,7 +259,7 @@ export function AuthScreen() {
                 <>
                   <Ionicons name={mode === 'login' ? 'log-in-outline' : mode === 'signup' ? 'person-add-outline' : 'send-outline'} size={18} color="#000" />
                   <Text style={styles.submitText}>
-                    {mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Code'}
+                    {mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'}
                   </Text>
                 </>
               )}
@@ -274,6 +279,175 @@ export function AuthScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0A0A1A',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 28,
+    paddingVertical: 40,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 36,
+  },
+  logoContainer: {
+    marginBottom: 16,
+  },
+  logoRing: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0, 240, 255, 0.06)',
+    borderWidth: 2,
+    borderColor: 'rgba(0, 240, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  brand: {
+    fontFamily: 'Orbitron_700Bold',
+    fontSize: 32,
+    color: Colors.dark.accent,
+    letterSpacing: 6,
+  },
+  tagline: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 13,
+    color: Colors.dark.textMuted,
+    marginTop: 6,
+    letterSpacing: 2,
+  },
+  formCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 20,
+    padding: 24,
+    gap: 16,
+  },
+  tabRow: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 12,
+    padding: 3,
+    marginBottom: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  tabActive: {
+    backgroundColor: 'rgba(0, 240, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 240, 255, 0.2)',
+  },
+  tabText: {
+    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontSize: 13,
+    color: Colors.dark.textMuted,
+  },
+  tabTextActive: {
+    color: Colors.dark.accent,
+  },
+  inputGroup: {
+    gap: 6,
+  },
+  inputLabel: {
+    fontFamily: 'Orbitron_700Bold',
+    fontSize: 8,
+    color: Colors.dark.textMuted,
+    letterSpacing: 3,
+    marginLeft: 4,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 14,
+    color: Colors.dark.text,
+    paddingVertical: 14,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: 4,
+  },
+  forgotPasswordText: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 12,
+    color: Colors.dark.accent,
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255, 46, 99, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 46, 99, 0.15)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  errorText: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 12,
+    color: Colors.dark.accentCoral,
+    flex: 1,
+  },
+  submitButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: Colors.dark.accent,
+    borderRadius: 14,
+    paddingVertical: 16,
+    marginTop: 4,
+  },
+  submitButtonLoading: {
+    opacity: 0.7,
+  },
+  submitText: {
+    fontFamily: 'Orbitron_700Bold',
+    fontSize: 13,
+    color: '#000',
+    letterSpacing: 1,
+  },
+  features: {
+    marginTop: 28,
+    gap: 10,
+    alignItems: 'center',
+  },
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  featureText: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 12,
+    color: Colors.dark.textSecondary,
+  },
+});
 
 const styles = StyleSheet.create({
   container: {

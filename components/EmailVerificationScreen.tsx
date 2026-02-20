@@ -179,23 +179,6 @@ export function EmailVerificationScreen() {
             )}
           </Pressable>
         </View>
-
-        {/* Back to Sign Up */}
-        <Pressable
-          style={styles.backButton}
-          onPress={() => {
-            Alert.alert('Go Back', 'Are you sure? You will need to sign in or sign up again.', [
-              { text: 'Cancel', onPress: () => {} },
-              {
-                text: 'Go Back',
-                onPress: () => logout(),
-                style: 'destructive',
-              },
-            ]);
-          }}
-        >
-          <Text style={styles.backButtonText}>Back to Sign Up</Text>
-        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );

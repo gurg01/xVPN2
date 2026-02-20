@@ -453,6 +453,73 @@ async function handleGetVpnConfig(req: AuthRequest, res: Response) {
   }
 }
 
+async function handleResendVerification(req: AuthRequest, res: Response) {
+  try {
+    const { email } = (req as any).body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (user.length === 0) return res.status(404).json({ error: "User not found" });
+
+    const userRecord = user[0];
+    if (userRecord.isVerified) return res.status(400).json({ error: "Email already verified" });
+
+    const verificationToken = uuidv4();
+    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await db.update(users)
+      .set({ verificationToken, verificationTokenExpiry: tokenExpiry })
+      .where(eq(users.id, userRecord.id));
+
+    const protocol = (req as any).protocol || 'https';
+    const host = ((req as any).get('host') || 'localhost');
+    const baseUrl = `${protocol}://${host}`;
+    
+    const { sendVerificationEmail } = await import("./lib/email");
+    await sendVerificationEmail(userRecord.email, userRecord.username, verificationToken, baseUrl);
+
+    return res.json({ success: true, message: "Verification email resent" });
+  } catch (error) {
+    console.error("Resend verification error:", error);
+    return res.status(500).json({ error: "Failed to resend email" });
+  }
+}
+
+async function handleForgotPassword(req: AuthRequest, res: Response) {
+  try {
+    const { email } = (req as any).body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (user.length === 0) return res.status(404).json({ error: "User not found" });
+
+    const userRecord = user[0];
+    const resetToken = uuidv4();
+    
+    const protocol = (req as any).protocol || 'https';
+    const host = ((req as any).get('host') || 'localhost');
+    const baseUrl = `${protocol}://${host}`;
+    
+    const { sendPasswordResetEmail } = await import("./lib/email");
+    await sendPasswordResetEmail(userRecord.email, userRecord.username, resetToken, baseUrl);
+
+    return res.json({ success: true, message: "Password reset email sent" });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return res.status(500).json({ error: "Failed to send reset email" });
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register Stripe routes (includes webhook handler)
   registerStripeRoutes(app);
@@ -461,6 +528,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/register", handleRegister);
   app.post("/api/verify-email", handleVerifyEmail);
   app.post("/api/login", handleLogin);
+  app.post("/api/resend-verification", handleResendVerification);
+  app.post("/api/forgot-password", handleForgotPassword);
 
   // Protected endpoints (require authentication)
   app.post("/api/create-checkout-session", authMiddleware, handleCreateCheckoutSession);
