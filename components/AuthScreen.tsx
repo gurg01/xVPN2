@@ -149,7 +149,7 @@ export function AuthScreen() {
                 </Pressable>
               </View>
               {mode === 'login' && (
-                <Pressable style={styles.forgotPassword} onPress={() => {}}>
+                <Pressable style={styles.forgotPassword} onPress={() => setError('Password reset feature coming soon')}>
                   <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                 </Pressable>
               )}
