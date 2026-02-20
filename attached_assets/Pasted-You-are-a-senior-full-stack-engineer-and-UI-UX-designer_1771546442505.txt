@@ -1,0 +1,76 @@
+You are a senior full-stack engineer and UI/UX designer. Stop explaining — generate production-ready code immediately.
+
+TASK:
+I have uploaded 3 images. Use them ONLY as visual guides to **write the app UI**, do NOT display them in the app.
+
+1. **Image 1:** Onboarding screen  
+   - Build a **3-slide carousel** in `Onboarding.js`  
+   - Each slide must match the layout, colors, and typography from Image 1  
+   - Include smooth swipe/slide animation  
+
+2. **Image 2:** Main Dashboard  
+   - Use this as the blueprint for `Home.jsx`  
+   - Recreate layout, buttons (especially the 'Connect' button), spacing, and styling  
+   - Make it fully interactive  
+
+3. **Image 3:** Login/Signup Page  
+   - Recreate the style, layout, input fields, and buttons for login and signup forms  
+   - Must match colors, typography, and spacing exactly  
+
+--------------------------------------------------
+FRONTEND REQUIREMENTS
+--------------------------------------------------
+
+- Use React or React Native (Expo compatible)  
+- Functional components + hooks  
+- Fully styled using CSS / Tailwind CSS or StyleSheet  
+- Components must be reusable  
+- Implement validation, loading states, and navigation between pages  
+- Make responsive for mobile screens  
+
+--------------------------------------------------
+FLOATING LABELS (Sign In / Sign Up / Forgot Password)
+--------------------------------------------------
+
+1. **Behavior:**  
+   - When input is empty, label sits inside the box like a placeholder  
+   - When user clicks or types, label animates upward to top-left of input and shrinks  
+   - Smooth CSS transition (0.2s ease-in-out)  
+
+2. **Style:**  
+   - Use xVPN "Deep Space" dark background theme  
+   - Label color changes to bright cyan / neon blue when active  
+
+3. **Code:**  
+   - Implement using Tailwind CSS `peer-placeholder-shown` or standard CSS transitions  
+   - Apply to **Email**, **Password**, **New Password**, **Confirm Password**, and any input field on Sign In, Sign Up, and Forgot Password pages  
+
+--------------------------------------------------
+BACKEND / AUTH REQUIREMENTS
+--------------------------------------------------
+
+- Secure email/password handling  
+- Password hashing (bcrypt)  
+- Email verification codes sent to **newly registered users** and **existing users**  
+- Forgot Password flow fully implemented with rate limiting and validation  
+- Endpoints:  
+  - POST /auth/register  
+  - POST /auth/forgot-password  
+  - POST /auth/verify-code  
+  - POST /auth/reset-password  
+
+--------------------------------------------------
+DELIVERABLES
+--------------------------------------------------
+
+1. Complete **Onboarding.js** carousel  
+2. Complete **Home.jsx** dashboard page  
+3. Complete **Login/Signup pages**  
+4. Complete **Forgot Password page**  
+5. Floating label inputs applied everywhere  
+6. Styling matching uploaded images exactly  
+7. Navigation between pages  
+8. Secure backend logic for email verification and password reset  
+9. Everything **production-ready, fully working, secure** — no placeholders, no explanations, just code  
+
+Stop explaining. Generate all code immediately.

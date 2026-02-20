@@ -17,18 +17,21 @@ const { width, height } = Dimensions.get('window');
 const DATA = [
   {
     id: '1',
-    title: 'Deep Space Security',
-    description: 'Protect your data with galactic-grade encryption.',
+    title: 'Ultimate VPN protection',
+    description: "ExpressVPN's Multi protocol is designed to keep you safe from future threats.",
+    image: require('@assets/image_1771546411215.png'),
   },
   {
     id: '2',
-    title: 'Ultra-Fast Servers',
-    description: 'Say goodbye to internet speed restrictions with our high-speed global network.',
+    title: 'Ultra-fast servers',
+    description: "Find out why we're called ExpressVPN and say goodbye to internet speed restrictions.",
+    image: require('@assets/image_1771546421455.png'),
   },
   {
     id: '3',
-    title: 'Zero-Log Policy',
-    description: 'Your browsing history stays in the void. We never track or log your data.',
+    title: '200+ secure locations',
+    description: 'Home or away, you can appear anywhere in the world with our global server network.',
+    image: require('@assets/image_1771546433539.png'),
   },
 ];
 

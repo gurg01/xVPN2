@@ -120,43 +120,36 @@ export default function DashboardScreen() {
             isProtecting={isProtecting}
             onPress={handlePowerPress}
           />
-          <Text style={[styles.statusText, { color: statusColor }]}>{statusText}</Text>
-
-          {vpnConfigError && (
-            <GlassCard style={[styles.serverInfo, styles.errorCard]} intensity="low">
-              <View style={styles.errorContent}>
-                <Ionicons name="alert-circle" size={16} color="#FF3131" />
-                <View style={styles.errorTextContainer}>
-                  <Text style={styles.errorTitle}>Subscription Required</Text>
-                  <Text style={styles.errorMessage}>{vpnConfigError}</Text>
-                </View>
-              </View>
-            </GlassCard>
-          )}
+          <View style={styles.protectedTimer}>
+            <Ionicons name="lock-closed" size={16} color={Colors.dark.text} />
+            <Text style={styles.protectedTimerText}>
+              {isConnected ? 'Protected' : 'Unprotected'} | {stats.sessionDuration}
+            </Text>
+          </View>
 
           {selectedServer && (
-            <GlassCard style={styles.serverInfo} intensity="low" glowColor={isConnected ? '#00E676' : undefined}>
-              <View style={styles.serverInfoRow}>
-                <View style={styles.serverDot}>
-                  <Ionicons
-                    name="location"
-                    size={14}
-                    color={isConnected ? '#00E676' : Colors.dark.accent}
-                  />
-                </View>
+            <Pressable style={styles.locationSelector} onPress={() => {}}>
+              <View style={styles.locationInfo}>
+                <Text style={styles.locationFlag}>{selectedServer.flag || '🇺🇸'}</Text>
                 <View>
-                  <Text style={styles.serverName}>USA - Texas</Text>
-                  <Text style={styles.serverCity}>{selectedServer.city}, {selectedServer.country}</Text>
+                  <Text style={styles.locationLabel}>Fastest Location</Text>
+                  <Text style={styles.locationName}>{selectedServer.country} - {selectedServer.city}</Text>
                 </View>
-                {isConnected && (
-                  <View style={styles.encryptedBadge}>
-                    <Ionicons name="lock-closed" size={10} color={Colors.dark.accent} />
-                    <Text style={styles.encryptedText}>AES-256</Text>
-                  </View>
-                )}
               </View>
-            </GlassCard>
+              <Ionicons name="chevron-forward" size={20} color={Colors.dark.textMuted} />
+            </Pressable>
           )}
+
+          <View style={styles.secondaryLocations}>
+            <View style={styles.locationMiniCard}>
+              <Text style={styles.miniCardLabel}>Smart Location</Text>
+              <Text style={styles.miniCardValue}>USA - New York</Text>
+            </View>
+            <View style={styles.locationMiniCard}>
+              <Text style={styles.miniCardLabel}>Recent Location</Text>
+              <Text style={styles.miniCardValue}>USA - Washington DC</Text>
+            </View>
+          </View>
         </View>
 
         <View style={styles.mapSection}>
@@ -223,6 +216,72 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
+  protectedTimer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  protectedTimerText: {
+    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontSize: 14,
+    color: Colors.dark.text,
+  },
+  locationSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: width * 0.9,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 16,
+    borderRadius: 20,
+    marginTop: 24,
+  },
+  locationInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  locationFlag: {
+    fontSize: 24,
+  },
+  locationLabel: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 12,
+    color: Colors.dark.textMuted,
+  },
+  locationName: {
+    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontSize: 16,
+    color: Colors.dark.text,
+  },
+  secondaryLocations: {
+    flexDirection: 'row',
+    width: width * 0.9,
+    gap: 12,
+    marginTop: 12,
+  },
+  locationMiniCard: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 16,
+    borderRadius: 20,
+  },
+  miniCardLabel: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 11,
+    color: Colors.dark.textMuted,
+    marginBottom: 4,
+  },
+  miniCardValue: {
+    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontSize: 13,
+    color: Colors.dark.accent,
+  },
   container: {
     flex: 1,
   },
